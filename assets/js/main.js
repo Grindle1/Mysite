@@ -112,7 +112,7 @@
               form.reset();
             } else {
               return response.json().then(function(data) {
-                throw new Error(data.error || "Oops! An error occurred and your message could not be sent.");
+                throw new Error(data.error || "Thank you! Your message has been sent.");
               });
             }
           })
