@@ -88,35 +88,42 @@
     /*::::::::::::::::::::::::::::::::::::
        Contact Area 
     ::::::::::::::::::::::::::::::::::::*/
-    var form = $('#contact-form');
-    var formMessages = $('.form-message');
-    
-    $(form).submit(function(e) {
-        e.preventDefault();
-        var formData = $(form).serialize();
-    
-        $.ajax({
-            type: 'POST',
-            url: 'https://formspree.io/f/mwpeezzr',
-            data: formData,
-            dataType: 'json'
-        })
-        .done(function(response) {
-            $(formMessages).removeClass('error');
-            $(formMessages).addClass('success');
-            $(formMessages).text("Thank you! Your message has been sent.");
-            $('#contact-form input,#contact-form textarea').val('');
-        })
-        .fail(function(data) {
-            $(formMessages).removeClass('success');
-            $(formMessages).addClass('error');
-            if (data.responseText !== '') {
-                $(formMessages).text(data.responseText);
-            } else {
-                $(formMessages).text('Oops! An error occurred and your message could not be sent.');
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.getElementById("contact-form");
+        var formMessages = document.querySelector(".form-message");
+      
+        form.addEventListener("submit", function(event) {
+          event.preventDefault();
+      
+          var formData = new FormData(form);
+      
+          fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+              "Accept": "application/json"
             }
+          })
+          .then(function(response) {
+            if (response.ok) {
+              formMessages.classList.remove("error");
+              formMessages.classList.add("success");
+              formMessages.textContent = "Thank you! Your message has been sent.";
+              form.reset();
+            } else {
+              return response.json().then(function(data) {
+                throw new Error(data.error || "Oops! An error occurred and your message could not be sent.");
+              });
+            }
+          })
+          .catch(function(error) {
+            formMessages.classList.remove("success");
+            formMessages.classList.add("error");
+            formMessages.textContent = error.message;
+          });
         });
-    });
+      });
+      
     
     
     
