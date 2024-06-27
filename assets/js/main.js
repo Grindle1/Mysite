@@ -89,15 +89,17 @@
        Contact Area 
     ::::::::::::::::::::::::::::::::::::*/
     var form = $('#contact-form');
-
     var formMessages = $('.form-message');
+    
     $(form).submit(function(e) {
         e.preventDefault();
         var formData = $(form).serialize();
+    
         $.ajax({
             type: 'POST',
-            url: $(form).attr('action'),
-            data: formData
+            url: 'https://formspree.io/f/mwpeezzr',
+            data: formData,
+            dataType: 'json'
         })
         .done(function(response) {
             $(formMessages).removeClass('error');
@@ -108,9 +110,14 @@
         .fail(function(data) {
             $(formMessages).removeClass('success');
             $(formMessages).addClass('error');
-            $(formMessages).text('Oops! An error occurred and your message could not be sent.');
+            if (data.responseText !== '') {
+                $(formMessages).text(data.responseText);
+            } else {
+                $(formMessages).text('Oops! An error occurred and your message could not be sent.');
+            }
         });
     });
+    
     
     
     /*::::::::::::::::::::::::::::::::::::
